@@ -23,7 +23,11 @@ jobs:
     runs-on: ubuntu-20.04
     container:
       image: dorzhi/zmk-docker:latest
-    needs: matrix
+      credentials:
+        username: tdorzhi@yandex.ru
+        password: ${{ secrets.DOCKER_PASS }}
+    needs:
+      - matrix
     name: Build
     strategy:
       fail-fast: false
@@ -68,12 +72,6 @@ jobs:
         run: west update
       - name: West Zephyr export
         run: west zephyr-export
-      - name: install apt-add-repository
-        run: apt update && apt install -y software-properties-common
-      - name: add python custom repository
-        run: add-apt-repository ppa:deadsnakes/ppa
-      - name: downgrade python
-        run: apt-get -y install python3.11
       - name: West Build (${{ steps.variables.outputs.display-name }})
         run: |
           west build -s zmk/app -b ${{ matrix.board }} -- -DZMK_CONFIG=${GITHUB_WORKSPACE}/config ${{ steps.variables.outputs.extra-cmake-args }} ${{ matrix.cmake-args }}
@@ -97,5 +95,5 @@ jobs:
       - name: Archive (${{ steps.variables.outputs.display-name }})
         uses: actions/upload-artifact@v4
         with:
-          name: firmware
+          name: firmware_${{ steps.variables.outputs.display-name }}
           path: build/artifacts
