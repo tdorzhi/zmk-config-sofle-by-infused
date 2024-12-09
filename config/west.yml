@@ -2,11 +2,11 @@ manifest:
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
-    - name: kriscables
-      url-base: https://github.com/kriscables
+    - name: tdorzhi
+      url-base: https://github.com/tdorzhi
   projects:
     - name: zmk
-      remote: kriscables
+      remote: tdorzhi
       revision: sofle
       import: app/west.yml
   self:
