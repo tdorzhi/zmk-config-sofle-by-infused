@@ -4,7 +4,7 @@ name: Build
 
 jobs:
   matrix:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     name: Fetch Build Keyboards
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -20,7 +20,7 @@ jobs:
           yaml2json build.yaml
           echo "::set-output name=matrix::${matrix}"
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     container:
       image: zmkfirmware/zmk-build-arm:3.5-branch
     needs: matrix
@@ -68,6 +68,12 @@ jobs:
         run: west update
       - name: West Zephyr export
         run: west zephyr-export
+      - name: install apt-add-repository
+        run: apt update && apt install -y software-properties-common
+      - name: add python custom repository
+        run: add-apt-repository ppa:deadsnakes/ppa
+      - name: downgrade python
+        run: apt-get -y install python3.11
       - name: West Build (${{ steps.variables.outputs.display-name }})
         run: |
           west build -s zmk/app -b ${{ matrix.board }} -- -DZMK_CONFIG=${GITHUB_WORKSPACE}/config ${{ steps.variables.outputs.extra-cmake-args }} ${{ matrix.cmake-args }}
