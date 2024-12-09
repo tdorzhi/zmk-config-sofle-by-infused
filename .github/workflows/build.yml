@@ -22,7 +22,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     container:
-      image: zmkfirmware/zmk-build-arm:3.5-branch
+      image: dorzhi/zmk-docker:latest
     needs: matrix
     name: Build
     strategy:
